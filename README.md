@@ -1,7 +1,7 @@
 # Distributed File System
 
 ## Overview
-This project is a **Distributed File Storage System** developed as part of the COMP2207 Distributed Systems coursework. The system supports multiple concurrent clients who can store, load, list, and remove files across distributed storage nodes (Dstores). The design ensures scalability, fault tolerance, and efficient file replication across nodes using **Java** and **TCP networking**.
+This project is a **Distributed File Storage System** developed as part of a university coursework. The system supports multiple concurrent clients who can store, load, list, and remove files across distributed storage nodes (Dstores). The design ensures scalability, fault tolerance, and efficient file replication across nodes using **Java** and **TCP networking**.
 
 ## Key Features
 - **Distributed Architecture**: The system consists of a Controller and multiple Data Stores (Dstores) that communicate via TCP connections.
