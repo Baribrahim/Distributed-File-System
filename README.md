@@ -35,5 +35,33 @@ This project is a **Distributed File Storage System** developed as part of the C
 ### How to Run
 1. **Controller**:  
    Run the Controller with the following command:  
-   ```bash
+   ```java
    java Controller <cport> <replication_factor> <timeout> <rebalance_period>
+## Parameters
+
+| Parameter               | Description                             |
+|-------------------------|-----------------------------------------|
+| `cport`                 | Controller’s listening port             |
+| `replication_factor`    | Number of replicas per file             |
+| `timeout`               | Timeout in milliseconds                  |
+| `rebalance_period`      | Period to trigger the rebalancing process |
+
+2. **Dstore**:
+Run the Controller with the following command:  
+```java
+java Dstore <port> <controller_port> <timeout> <file_folder>
+
+## Parameters
+
+| Parameter               | Description                             |
+|-------------------------|-----------------------------------------|
+| `port`                 | Controller’s listening port             |
+| `controller_port`      | Number of replicas per file             |
+| `timeout`              | Timeout in milliseconds                  |
+| `file_folder`          | Period to trigger the rebalancing process |
+
+3. **Client**:
+```java
+java Client <controller_port> <timeout>
+
+## Example Usage
