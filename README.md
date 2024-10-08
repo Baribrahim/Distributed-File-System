@@ -47,9 +47,9 @@ This project is a **Distributed File Storage System** developed as part of the C
 | `rebalance_period`      | Period to trigger the rebalancing process |
 
 2. **Dstore**:
-Run the Controller with the following command:  
-```java
-java Dstore <port> <controller_port> <timeout> <file_folder>
+   Run the Controller with the following command:  
+   ```java
+   java Dstore <port> <controller_port> <timeout> <file_folder>
 
 ## Parameters
 
@@ -61,7 +61,31 @@ java Dstore <port> <controller_port> <timeout> <file_folder>
 | `file_folder`          | Period to trigger the rebalancing process |
 
 3. **Client**:
-```java
-java Client <controller_port> <timeout>
+   ```java
+   java Client <controller_port> <timeout>
 
 ## Example Usage
+### Store a File
+      To store a file, use the following command:
+      ```java
+      java Client <controller_port> STORE <filename> <filesize>
+### Load a File
+      To load a file, use the following command:
+      ```java
+      java Client <controller_port> LOAD <filename>
+### Remove a File
+      To remove a file, use the following command:
+      ```java
+      java Client <controller_port> REMOVE <filename>
+### List a File
+      To list a file, use the following command:
+      ```java
+      java Client <controller_port> LIST
+## Failure Handling
+- If a Dstore fails during a store or remove operation, the Controller automatically adjusts the system to ensure consistency.
+- Clients receive appropriate error messages if Dstores are unavailable or if replication requirements are not met.
+
+## Future Improvements
+- Support for larger file sizes and distributed operation across multiple machines.
+- Enhanced fault tolerance to handle multiple simultaneous Dstore failures.
+- Add storage rebalance operation
