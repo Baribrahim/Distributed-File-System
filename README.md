@@ -7,7 +7,6 @@ This project is a **Distributed File Storage System** developed as part of a uni
 - **Distributed Architecture**: The system consists of a Controller and multiple Data Stores (Dstores) that communicate via TCP connections.
 - **File Replication**: Files are replicated across multiple Dstores to ensure data redundancy and availability.
 - **Concurrency Handling**: Multiple clients can send concurrent requests to store, load, and remove files.
-- **Dynamic Scaling**: Dstores can join or leave the system at runtime, and the system rebalances to maintain file replication.
 - **Failure Handling**: Dstores can fail without affecting the overall functionality, and files are redistributed as needed.
 
 ## Technologies Used
