@@ -1,9 +1,12 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +14,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -196,6 +200,83 @@ public class Controller {
         log("Dstore " + port + " disconnected or crashed");
       }
     }).start();
+  }
+
+  /**
+   * Performs a list operation to transmit the list of files with complete status to the client.
+   *
+   * @param clientSocket The socket connected to the client.
+   * @throws IOException If an I/O error occurs when sending the data through the socket.
+   */
+  private static void handleLIST(Socket clientSocket) throws IOException {
+    //Check if there are enough Dstores available
+    if (dstores.size() >= r) {
+      //Retrieve the list of file names with "store complete" status
+      Set<String> fileNames = getFileNamesWithStatuses(Index.Status.STORE_COMPLETE);
+      //Transmit the list of file names to the client
+      transmitMessage(Protocol.LIST_TOKEN, concatenateToString(fileNames), clientSocket);
+      log("Listed Files: " + concatenateToString(fileNames));
+    } else {
+      transmitMessage(Protocol.ERROR_NOT_ENOUGH_DSTORES_TOKEN, clientSocket);
+      log("Insufficient Dstores for Listing Files");
+    }
+  }
+
+  /**
+   * This method formats and transmits the command and data, then flushes the stream to ensure the message is sent immediately.
+   *
+   * @param command The command to send to the client.
+   * @param data Data to accompany the command. If not null, it will be sent immediately after the command.
+   * @param socket The socket through which the message should be sent.
+   * @throws IOException If an I/O error occurs when sending the data through the socket.
+   */
+  private static void transmitMessage(String command, Object data, Socket socket) throws IOException {
+    PrintWriter socketWriter = new PrintWriter(socket.getOutputStream());
+    socketWriter.print(command);
+    if (data != null) {
+      socketWriter.print(" ");
+      socketWriter.print(data);
+    }
+    socketWriter.println();
+    socketWriter.flush();
+    controller_logger.messageSent(socket, command + " " + data);
+  }
+
+  /**
+   * This is an overloaded version of the transmitMessage method that only requires a command and a socket,
+   * making it suitable for sending commands that do not require data.
+   *
+   * @param command The command to be sent to the client.
+   * @param socket The socket through which the command is sent.
+   * @throws IOException If an I/O error occurs when sending the data through the socket.
+   */
+  private static void transmitMessage(String command, Socket socket) throws IOException {
+    transmitMessage(command, null, socket);
+  }
+
+  /**
+   * Retrieves the names of files with specified statuses.
+   *
+   * @param statuses The legal statuses of files to consider.
+   * @return A set containing the names of files with the specified statuses.
+   */
+  private static Set<String> getFileNamesWithStatuses(Index.Status... statuses) {
+    return stored_files.stream()
+        .filter(file -> Arrays.asList(statuses).contains(file.status))
+        .map(file -> file.fileName)
+        .collect(Collectors.toSet());
+  }
+
+  /**
+   * Concatenates elements of a collection into a single string.
+   *
+   * @param collection The collection whose elements to concatenate.
+   * @return A string containing the concatenated elements of the collection separated by a space.
+   */
+  private static String concatenateToString(Collection<?> collection) {
+    return collection.stream()
+        .map(String::valueOf)
+        .collect(Collectors.joining(" "));
   }
 
   private static int getDstorePort(Socket dstoreSocket) {
